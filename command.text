@@ -1,0 +1,9 @@
+Assignment 1: Infrastructure & Installations
+Student: [Your Name]
+
+Commands used:
+- sudo apt update (Updated package list)
+- sudo apt install git (Installed Git)
+- git clone https://github.com/fkenghagho/rpwr-assignments.git (Cloned course repo)
+- mkdir my-assignments (Created my personal workspace)
+- cd my-assignments (Moved into my folder)
