@@ -1,0 +1,28 @@
+# Assignment 2 - Turtle Markers
+
+# Source ROS2
+source /opt/ros/jazzy/setup.bash
+
+# Run turtlesim
+ros2 run turtlesim turtlesim_node
+
+# Run RViz
+rviz2
+
+# Create the turtle marker file
+nano ~/turtle_task2_3.py
+
+# Run the turtle marker script
+python3 ~/turtle_task2_3.py
+
+# Spawn turtle2
+ros2 service call /spawn turtlesim/srv/Spawn "{x: 3.0, y: 3.0, theta: 0.0, name: 'turtle2'}"
+
+# Move turtle1 with keyboard
+ros2 run turtlesim turtle_teleop_key
+
+# Move turtle2 with keyboard
+ros2 run turtlesim turtle_teleop_key --ros-args --remap /turtle1/cmd_vel:=/turtle2/cmd_vel
+
+# Check active topics
+ros2 topic list | grep turtle
