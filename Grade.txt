@@ -1,0 +1,5 @@
+Assignment 1:
+Grade: 0/3. No answer found.
+
+Assignment 2:
+Grade: 5/12. No answer to task 1 found. 5 pts have been removed for unsatisfactory robot model (shape, wheel setup and transform).
