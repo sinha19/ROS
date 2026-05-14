@@ -1,0 +1,25 @@
+Task 1 - Robot Kinematics vs Dynamics
+
+Forward kinematics:
+
+For a two-wheel differential robot, forward kinematics xmeans calculating the robot movement from the wheel speeds. If the left and right wheel speeds are known, we can calculate the robot linear velocity(v) and angular velocity(ω) where the robot ends up in the world (x, y, θ).
+
+Inverse kinematics:
+
+Inverse kinematics means calculating the wheel speeds needed to obtain a desired robot motion. For example, if we want the turtle robot to move forward or turn left, we calculate the required left and right wheel velocities.Inverse kinematics computes this required individual wheel velocities.
+
+Forward dynamics:
+
+Forward dynamics means calculating the robot acceleration or motion from applied forces or torques. It computes the resulting accelerations, velocities, and motion of the robot — accounting for mass, inertia, and friction.For example, if the motors apply torque to the two wheels, forward dynamics predicts how the robot will accelerate.
+
+Inverse dynamics:
+
+Inverse dynamics means calculating the forces or torques needed to produce a desired motion. For example, if we want the robot to accelerate at a certain rate, inverse dynamics calculates the motor torques needed.
+
+Difference:
+
+Kinematics studies motion without considering forces. Dynamics studies motion together with forces, mass, inertia, and torque.
+
+For navigation:
+
+In normal ROS navigation, kinematics is used more often to convert velocity commands into wheel movement. Dynamics becomes important when the robot must consider motor limits, friction, payload, or acceleration.
