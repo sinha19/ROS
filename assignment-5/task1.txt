@@ -1,0 +1,82 @@
+ASSIGNMENT 5 - TASK 1: Robotic Sensing: LiDAR Utility, Limitations, and Error Handling
+
+-----------------------------------------------------------
+SECTION 1: LiDAR Utility and Constraints
+-----------------------------------------------------------
+
+APPLICATION:
+A 1D LiDAR (single-beam laser range finder) on a differential drive robot is primarily used for obstacle detection and avoidance. It measures the distance to the nearest object along a single line/direction in front of the robot.
+This makes it useful for:
+  - Detecting walls or obstacles ahead and triggering stop/turn. behavior
+  - Simple proximity-based navigation (e.g., wall following).
+  - Basic collision prevention.
+
+For tracking the ROBOT POSE (position + orientation), a 1D LiDAR alone isinsufficient. The appropriate sensors for pose tracking are:
+  - Wheel Encoders (odometry): estimate wheel rotation and robot movement using odometry.
+  - IMU (Inertial Measurement Unit): measures angular velocity and linear acceleration to estimate orientation and movement.
+  - 2D/3D LiDAR or Camera: used with SLAM algorithms to localize the robot within a map (exteroceptive).So, it can improves localization and mapping accuracy.
+  - GPS (outdoor only): provides absolute global position.
+  In practice, a combination of wheel encoders + IMU is standard for differential drive pose tracking, optionally fused with SLAM-based methods.
+
+LIMITATIONS of 1D LiDAR:
+
+1. Glass or transparent surfaces:
+   Laser light passes through glass or transparent plastic without reflecting back. The LiDAR receives no return signal and treats the obstacle as empty space, causing the robot to collide with it.
+
+2. Highly reflective or mirror-like surfaces:
+   Shiny metal surfaces or mirrors can deflect the laser beam away from the sensor at unexpected angles, causing incorrect (too-far or no) distance readings, leading to phantom obstacles or missed ones.
+
+3. Obstacles above or below the beam plane:
+   Since a 1D LiDAR measures in only one direction/height, objects that are higher or lower than the beam level are completely invisible. For example, a low-lying threshold, a hanging cable, or a step/staircase would not be detected, posing a risk of collision or falling.
+
+4. Thin or narrow objects:
+   Objects thinner than the laser beam width (e.g., chair legs, thin wires or narrow poles) may be missed entirely between scan samples, especially at longer ranges where angular resolution degrades.
+
+5. Dust, smoke, or fog:
+   Airborne particles scatter the laser beam, causing spurious short-range readings or absorbing the beam entirely, leading to unreliable distance estimates.
+
+MITIGATION:
+To overcome the above blind spots, an RGB-D Camera (depth camera, e.g, Intel RealSense or Microsoft Kinect) would be the best additional modality:
+  - It captures a full 2D depth image, detecting objects at ALL heights in
+    its field of view — solving the above/below beam problem.
+  - It handles thin objects better due to dense pixel coverage.
+  - It provides visual texture information, which helps distinguish glass from open space when combined with color/IR sensing.
+  - It enables richer SLAM and obstacle detection using point clouds.
+  Alternatively, an ultrasonic sensor can help detect transparent surfaces since sound reflects off glass where laser does not. It detect transparent or reflective surfaces better at short range
+
+-----------------------------------------------------------
+SECTION 2: Error Analysis and Denoising
+-----------------------------------------------------------
+
+SYSTEMATIC vs. RANDOM ERRORS:
+
+Systematic Errors:
+  - These are consistent, repeatable, and predictable errors that occur in the same direction every time under the same conditions.
+  - They are caused by a fixed flaw: sensor miscalibration, mounting offset, manufacturing defect, or a consistent environmental bias.
+  - Example: A LiDAR that is mounted 2 cm off-center always reports distances that are 2 cm shorter than reality. Another example: wheel encoders that consistently overcount due to wheel slip on a specific floor type.
+  - Systematic errors DO NOT cancel out when averaging many measurements.
+
+Random Errors:
+  - These are unpredictable, non-repeatable fluctuations around the true value.
+  - They are caused by noise: electronic noise in the sensor circuit, ambient light interference, slight vibrations, or atmospheric turbulence.
+  - Example: A LiDAR reads 1.00 m, 1.02 m, 0.98 m, 1.01 m for a stationary object — each slightly different due to noise.
+  - Random errors tend to cancel out when averaging many measurements.
+
+ERROR REMOVAL TECHNIQUES:
+
+Removing Random Errors — Low-Pass / Averaging Filters:
+  - Since random errors are zero-mean noise, collecting multiple measurements and averaging them reduces the noise level (law of large numbers).
+  - Techniques:
+      * Moving Average Filter: average the last N readings continuously.
+      * Gaussian / Median Filter: robust to outliers; median filter especially useful for "spike" noise in LiDAR data.
+      * Kalman Filter: optimally fuses noisy sensor data with a motion model, providing a statistically optimal estimate that suppresses random noise.
+  - Example: Instead of using one raw LiDAR reading, average 10 consecutive readings of a stationary target to get a more stable estimate.
+
+Removing Systematic Errors — Calibration:
+  - Since systematic errors are consistent and predictable, they can be measured and mathematically corrected.
+  - Technique: measure known ground-truth distances (or angles), compare with sensor output, compute the offset/scale factor, and apply a correction formula to all future readings.
+  - Example: If the LiDAR always reads 5 cm too short, apply a +5 cm correction offset. If wheel encoders always overestimate by 3%, apply a 0.97 scale factor to odometry calculations.
+
+CALIBRATION:
+  Calibration is formally defined as the process of identifying and correcting SYSTEMATIC ERRORS in a sensor or measurement system. It involves comparing sensor output against a known reference standard and computing correction parameters (offsets, scale factors, transformation matrices) to align the sensor's readings with ground truth.
+Calibration does NOT address random (stochastic) noise — that is handled by filtering. Calibration corrects for the deterministic, repeatable bias component of sensor error.
