@@ -9,3 +9,6 @@ Grade: 15/15 (Excellent). The goal of the control is to take a goal from plannin
 
 Assignment 4:
 Grade: 2/5. Completely unmatched robot urdf model and too late submission.
+
+Assignment 5:
+Grade: 4.9/5 (Excellent). Map exploration is incomplete (see gray cells , i.e., unknown occupancy, behind doors). 
